@@ -15,6 +15,11 @@
 #include <stddef.h>
 #include <string.h>
 #include <limits.h>
+#include <or1k-support.h>
+
+#ifndef TIMER_HZ
+#define TIMER_HZ 1000
+#endif
 
 static size_t table[UCHAR_MAX + 1];
 static size_t len;
@@ -138,6 +143,10 @@ main() {
                               "principles."
                              };
     int i;
+    unsigned int ticks;
+
+    or1k_timer_init(TIMER_HZ);
+    or1k_timer_enable();
 
     for (i = 0; find_strings[i]; i++) {
         init_search(find_strings[i]);
@@ -149,6 +158,8 @@ main() {
         putchar('\n');
     }
 
+    ticks = or1k_timer_get_ticks();
+    printf("Elapsed: %d ticks at %d Hz\n", ticks, TIMER_HZ);
+
     return 0;
 }
-
