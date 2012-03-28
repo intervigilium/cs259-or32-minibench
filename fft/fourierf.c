@@ -26,10 +26,8 @@
 
 #define CHECKPOINTER(p)  CheckPointer(p,#p)
 
-static void CheckPointer ( void *p, char *name )
-{
-    if ( p == NULL )
-    {
+static void CheckPointer ( void *p, char *name ) {
+    if ( p == NULL ) {
         fprintf ( stderr, "Error in fft_float():  %s == NULL\n", name );
         exit(1);
     }
@@ -42,8 +40,7 @@ void fft_float (
     float    *RealIn,
     float    *ImagIn,
     float    *RealOut,
-    float    *ImagOut )
-{
+    float    *ImagOut ) {
     unsigned NumBits;    /* Number of bits needed to store indices */
     unsigned i, j, k, n;
     unsigned BlockSize, BlockEnd;
@@ -51,8 +48,7 @@ void fft_float (
     double angle_numerator = 2.0 * DDC_PI;
     double tr, ti;     /* temp real, temp imaginary */
 
-    if ( !IsPowerOfTwo(NumSamples) )
-    {
+    if ( !IsPowerOfTwo(NumSamples) ) {
         fprintf (
             stderr,
             "Error in fft():  NumSamples=%u is not power of two\n",
@@ -74,8 +70,7 @@ void fft_float (
     **   Do simultaneous data copy and bit-reversal ordering into outputs...
     */
 
-    for ( i=0; i < NumSamples; i++ )
-    {
+    for ( i=0; i < NumSamples; i++ ) {
         j = ReverseBits ( i, NumBits );
         RealOut[j] = RealIn[i];
         ImagOut[j] = (ImagIn == NULL) ? 0.0 : ImagIn[i];
@@ -86,8 +81,7 @@ void fft_float (
     */
 
     BlockEnd = 1;
-    for ( BlockSize = 2; BlockSize <= NumSamples; BlockSize <<= 1 )
-    {
+    for ( BlockSize = 2; BlockSize <= NumSamples; BlockSize <<= 1 ) {
         double delta_angle = angle_numerator / (double)BlockSize;
         double sm2 = sin ( -2 * delta_angle );
         double sm1 = sin ( -delta_angle );
@@ -97,16 +91,14 @@ void fft_float (
         double ar[3], ai[3];
         double temp;
 
-        for ( i=0; i < NumSamples; i += BlockSize )
-        {
+        for ( i=0; i < NumSamples; i += BlockSize ) {
             ar[2] = cm2;
             ar[1] = cm1;
 
             ai[2] = sm2;
             ai[1] = sm1;
 
-            for ( j=i, n=0; n < BlockEnd; j++, n++ )
-            {
+            for ( j=i, n=0; n < BlockEnd; j++, n++ ) {
                 ar[0] = w*ar[1] - ar[2];
                 ar[2] = ar[1];
                 ar[1] = ar[0];
@@ -134,12 +126,10 @@ void fft_float (
     **   Need to normalize if inverse transform...
     */
 
-    if ( InverseTransform )
-    {
+    if ( InverseTransform ) {
         double denom = (double)NumSamples;
 
-        for ( i=0; i < NumSamples; i++ )
-        {
+        for ( i=0; i < NumSamples; i++ ) {
             RealOut[i] /= denom;
             ImagOut[i] /= denom;
         }
