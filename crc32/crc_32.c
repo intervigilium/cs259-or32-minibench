@@ -3,7 +3,12 @@
 /* Crc - 32 BIT ANSI X3.66 CRC checksum files */
 
 #include <stdio.h>
+#include <or1k-support.h>
 #include "crc.h"
+
+#ifndef TIMER_HZ
+#define TIMER_HZ 1000
+#endif
 
 #ifdef __TURBOC__
  #pragma warn -cln
@@ -177,11 +182,19 @@ main(int argc, char *argv[])
       DWORD crc;
       long charcnt;
       register errors = 0;
+      unsigned int ticks;
+
+      or1k_timer_init(TIMER_HZ);
+      or1k_timer_enable();
 
       while(--argc > 0)
       {
             errors |= crc32file(*++argv, &crc, &charcnt);
             printf("%08lX %7ld %s\n", crc, charcnt, *argv);
       }
+
+      ticks = or1k_timer_get_ticks();
+      printf("Elapsed: %d ticks at %d Hz\n", ticks, TIMER_HZ);
+
       return(errors != 0);
 }
