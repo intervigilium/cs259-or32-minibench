@@ -1,6 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <or1k-support.h>
+
+#ifndef TIMER_HZ
+#define TIMER_HZ 1000
+#endif
 
 int main(int argc, char *argv[]) {
 	unsigned MAXSIZE;
@@ -13,6 +18,7 @@ int main(int argc, char *argv[]) {
 	float *coeff;
 	float *amp;
 	int invfft=0;
+        unsigned int ticks;
 
 	if (argc<3)
 	{
@@ -61,6 +67,9 @@ int main(int argc, char *argv[]) {
 	 }
  }
 
+ or1k_timer_init(TIMER_HZ);
+ or1k_timer_enable();
+
  /* regular*/
  fft_float (MAXSIZE,invfft,RealIn,ImagIn,RealOut,ImagOut);
  
@@ -73,6 +82,9 @@ printf("ImagOut:\n");
  for (i=0;i<MAXSIZE;i++)
    printf("%f \t", ImagOut[i]);
    printf("\n");
+
+ ticks = or1k_timer_get_ticks();
+ printf("Elapsed: %d ticks at %d Hz\n", ticks, TIMER_HZ);
 
  free(RealIn);
  free(ImagIn);
