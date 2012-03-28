@@ -1,12 +1,26 @@
-FILE1 = basicmath_small.c   rad2deg.c  cubic.c   isqrt.c
-FILE2 = basicmath_large.c   rad2deg.c  cubic.c   isqrt.c
+# Makefile
 
-all: basicmath_small basicmath_large
+CC = or32-elf-gcc
+CFLAGS = -static -O3 -mregistermask=0 -mnewlib
+LIBS = -lm
 
-basicmath_small: ${FILE1} Makefile
-	gcc -static -O3 ${FILE1} -o basicmath_small -lm
-basicmath_large: ${FILE2} Makefile
-	gcc -static -O3 ${FILE2} -o basicmath_large -lm
+SRC1 = basicmath_small.c rad2deg.c cubic.c isqrt.c
+OBJ1 = ${SRC1:.c=.o}
+OUT1 = basicmath_small
+
+SRC2 = basicmath_large.c rad2deg.c cubic.c isqrt.c
+OBJ2 = ${SRC2:.c=.o}
+OUT2 = basicmath_large
+
+all: ${OUT1} ${OUT2}
+
+${OUT1}:
+	${CC} ${CFLAGS} ${SRC1} -o ${OUT1} ${LIBS}
+${OUT2}:
+	${CC} ${CFLAGS} ${SRC2} -o ${OUT2} ${LIBS}
+
+.c.o:
+	${CC} ${CFLAGS} ${LIBS} -c $< -o $@
 
 clean:
-	rm -rf basicmath_small basicmath_large output*
+	rm -rf ${OUT1} ${OUT2} output* *.o

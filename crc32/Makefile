@@ -1,5 +1,20 @@
-crc: crc_32.c Makefile
-	gcc -static crc_32.c -O3 -o crc 
+# Makefile
+
+CC = or32-elf-gcc
+CFLAGS = -O3 -static -mregistermask=0 -mnewlib
+LIBS =
+
+SRC = crc_32.c
+OBJ = ${SRC:.c=.o}
+OUT = crc
+
+all: ${OUT}
+
+${OUT}:
+	${CC} ${CFLAGS} ${SRC} -o ${OUT} ${LIBS}
+
+.c.o:
+	${CC} ${CFLAGS} ${LIBS} -c $< -o $@
 
 clean:
-	rm -rf crc output*
+	rm -rf ${OUT} output* *.o

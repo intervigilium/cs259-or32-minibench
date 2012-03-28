@@ -1,13 +1,27 @@
-FILE1 = bmhasrch.c  bmhisrch.c  bmhsrch.c  pbmsrch_small.c 
-FILE2 = bmhasrch.c  bmhisrch.c  bmhsrch.c  pbmsrch_large.c 
+# Makefile
 
-all: search_small search_large
+CC = or32-elf-gcc
+CFLAGS = -O3 -static -mregistermask=0 -mnewlib
+LIBS =
 
-search_small: ${FILE1} Makefile
-	gcc -static ${FILE1} -O3 -o search_small
+SRC1 = bmhasrch.c bmhisrch.c bmhsrch.c pbmsrch_small.c
+OBJ1 = ${SRC1:.c=.o}
+OUT1 = search_small
 
-search_large: ${FILE2} Makefile
-	gcc -static ${FILE2} -O3 -o search_large
+SRC2 = bmhasrch.c bmhisrch.c bmhsrch.c pbmsrch_large.c
+OBJ2 = ${SRC2:.c=.o}
+OUT2 = search_large
+
+all: ${OUT1} ${OUT2}
+
+${OUT1}:
+	${CC} ${CFLAGS} ${SRC1} -o ${OUT1} ${LIBS}
+
+${OUT2}:
+	${CC} ${CFLAGS} ${SRC2} -o ${OUT2} ${LIBS}
+
+.c.o:
+	${CC} ${CFLAGS} ${LIBS} -c $< -o $@
 
 clean:
-	rm -rf search_small search_large output*
+	rm -rf ${OUT1} ${OUT2} output* *.o
