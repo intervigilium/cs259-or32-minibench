@@ -39,68 +39,62 @@ static uchar *pat = NULL;       /* uppercase copy of pattern        */
 ** Error: exit(1) is called if no memory is available.
 */
 
-void bmhi_init(const char *pattern)
-{
-      int i, lastpatchar;
-      patlen = strlen(pattern);
+void bmhi_init(const char *pattern) {
+    int i, lastpatchar;
+    patlen = strlen(pattern);
 
-      /* Make uppercase copy of pattern */
+    /* Make uppercase copy of pattern */
 
-      pat = realloc ((void*)pat, patlen);
-      if (!pat)
-            exit(1);
-      else  atexit(bhmi_cleanup);
-      for (i=0; i < patlen; i++)
-            pat[i] = toupper(pattern[i]);
+    pat = realloc ((void*)pat, patlen);
+    if (!pat)
+        exit(1);
+    else  atexit(bhmi_cleanup);
+    for (i=0; i < patlen; i++)
+        pat[i] = toupper(pattern[i]);
 
-      /* initialize skip array */
+    /* initialize skip array */
 
-      for ( i = 0; i <= UCHAR_MAX; ++i )                    /* rdg 10/93 */
-            skip[i] = patlen;
-      for ( i = 0; i < patlen - 1; ++i )
-      {
-            skip[        pat[i] ] = patlen - i - 1;
-            skip[tolower(pat[i])] = patlen - i - 1;
-      }
-      lastpatchar = pat[patlen - 1];
-      skip[        lastpatchar ] = LARGE;
-      skip[tolower(lastpatchar)] = LARGE;
-      skip2 = patlen;                     /* Horspool's fixed second shift */
-      for (i = 0; i < patlen - 1; ++i)
-      {
-            if ( pat[i] == lastpatchar )
-                  skip2 = patlen - i - 1;
-      }
+    for ( i = 0; i <= UCHAR_MAX; ++i )                    /* rdg 10/93 */
+        skip[i] = patlen;
+    for ( i = 0; i < patlen - 1; ++i ) {
+        skip[        pat[i] ] = patlen - i - 1;
+        skip[tolower(pat[i])] = patlen - i - 1;
+    }
+    lastpatchar = pat[patlen - 1];
+    skip[        lastpatchar ] = LARGE;
+    skip[tolower(lastpatchar)] = LARGE;
+    skip2 = patlen;                     /* Horspool's fixed second shift */
+    for (i = 0; i < patlen - 1; ++i) {
+        if ( pat[i] == lastpatchar )
+            skip2 = patlen - i - 1;
+    }
 }
 
-char *bmhi_search(const char *string, const int stringlen)
-{
-      int i, j;
-      char *s;
+char *bmhi_search(const char *string, const int stringlen) {
+    int i, j;
+    char *s;
 
-      i = patlen - 1 - stringlen;
-      if (i >= 0)
+    i = patlen - 1 - stringlen;
+    if (i >= 0)
+        return NULL;
+    string += stringlen;
+    for ( ;; ) {
+        while ( (i += skip[((uchar *)string)[i]]) < 0 )
+            ;                           /* mighty fast inner loop */
+        if (i < (LARGE - stringlen))
             return NULL;
-      string += stringlen;
-      for ( ;; )
-      {
-            while ( (i += skip[((uchar *)string)[i]]) < 0 )
-                  ;                           /* mighty fast inner loop */
-            if (i < (LARGE - stringlen))
-                  return NULL;
-            i -= LARGE;
-            j = patlen - 1;
-            s = (char *)string + (i - j);
-            while ( --j >= 0 && toupper(s[j]) == pat[j] )
-                  ;
-            if ( j < 0 )                                    /* rdg 10/93 */
-                  return s;                                 /* rdg 10/93 */
-            if ( (i += skip2) >= 0 )                        /* rdg 10/93 */
-                  return NULL;                              /* rdg 10/93 */
-      }
+        i -= LARGE;
+        j = patlen - 1;
+        s = (char *)string + (i - j);
+        while ( --j >= 0 && toupper(s[j]) == pat[j] )
+            ;
+        if ( j < 0 )                                    /* rdg 10/93 */
+            return s;                                 /* rdg 10/93 */
+        if ( (i += skip2) >= 0 )                        /* rdg 10/93 */
+            return NULL;                              /* rdg 10/93 */
+    }
 }
 
-void bhmi_cleanup(void)
-{
-      free(pat);
+void bhmi_cleanup(void) {
+    free(pat);
 }
