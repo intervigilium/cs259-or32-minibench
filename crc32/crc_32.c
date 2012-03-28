@@ -168,7 +168,7 @@ DWORD crc32buf(char *buf, size_t len)
       }
 
       return ~oldcrc32;
-      
+
 }
 
 int
