@@ -1,7 +1,7 @@
 # Makefile
 
 CC = or32-elf-gcc
-CFLAGS = -static -O3 -mregistermask=0 -mnewlib
+CFLAGS = -static -O3 -mregistermask=0 -mnewlib -DTIMER_HZ=1000
 LIBS = -lm
 
 SRC1 = basicmath_small.c rad2deg.c cubic.c isqrt.c
