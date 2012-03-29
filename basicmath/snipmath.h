@@ -25,8 +25,8 @@ int     double_to_bcd(double arg, char *buf,          /* Bcdd.C         */
 DWORD   ncomb1 (int n, int m);                        /* Combin.C       */
 DWORD   ncomb2 (int n, int m);                        /* Combin.C       */
 void    SolveCubic(double a, double b, double c,      /* Cubic.C        */
-                  double d, int *solutions,
-                  double *x);
+                   double d, int *solutions,
+                   double *x);
 DWORD   dbl2ulong(double t);                          /* Dbl2Long.C     */
 long    dbl2long(double t);                           /* Dbl2Long.C     */
 double  dround(double x);                             /* Dblround.C     */
@@ -56,8 +56,8 @@ double  deg2rad(double deg);                          /* Rad2Deg.C      */
 
 #include "pi.h"
 #ifndef PHI
- #define PHI      ((1.0+sqrt(5.0))/2.0)         /* the golden number    */
- #define INV_PHI  (1.0/PHI)                     /* the golden ratio     */
+#define PHI      ((1.0+sqrt(5.0))/2.0)         /* the golden number    */
+#define INV_PHI  (1.0/PHI)                     /* the golden ratio     */
 #endif
 
 /*
@@ -65,8 +65,8 @@ double  deg2rad(double deg);                          /* Rad2Deg.C      */
 */
 
 struct int_sqrt {
-      unsigned sqrt,
-               frac;
+    unsigned sqrt,
+             frac;
 };
 
 void usqrt(unsigned long x, struct int_sqrt *q);

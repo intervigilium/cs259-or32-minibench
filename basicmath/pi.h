@@ -4,7 +4,7 @@
 #define PI__H
 
 #ifndef PI
- #define PI         (4*atan(1))
+#define PI         (4*atan(1))
 #endif
 
 #define deg2rad(d) ((d)*PI/180)

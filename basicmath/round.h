@@ -17,16 +17,14 @@
 
 /* round to integer */
 
-inline int iround(double x)
-{
-      return (int)floor(x + 0.5);
+inline int iround(double x) {
+    return (int)floor(x + 0.5);
 }
 
 /* round number n to d decimal points */
 
-inline double fround(double n, unsigned d)
-{
-      return floor(n * pow(10., d) + .5) / pow(10., d);
+inline double fround(double n, unsigned d) {
+    return floor(n * pow(10., d) + .5) / pow(10., d);
 }
 
 #else
