@@ -7,6 +7,14 @@
 #define TIMER_HZ 1000
 #endif
 
+#ifndef WAVES
+#define WAVES 4
+#endif
+
+#ifndef LENGTH
+#define LENGTH 4096
+#endif
+
 int main(int argc, char *argv[]) {
     unsigned MAXSIZE;
     unsigned MAXWAVES;
@@ -20,16 +28,30 @@ int main(int argc, char *argv[]) {
     int invfft=0;
     unsigned int ticks;
 
-    if (argc<3) {
-        printf("Usage: fft <waves> <length> -i\n");
-        printf("-i performs an inverse fft\n");
-        printf("make <waves> random sinusoids");
-        printf("<length> is the number of samples\n");
-        exit(-1);
-    } else if (argc==4)
-        invfft = !strncmp(argv[3],"-i",2);
-    MAXSIZE=atoi(argv[2]);
-    MAXWAVES=atoi(argv[1]);
+    switch (argc) {
+        case 0:
+        case 1:
+        case 2:
+            printf("Usage: fft <waves> <length> -i\n");
+            printf("-i performs an inverse fft\n");
+            printf("make <waves> random sinusoids");
+            printf("<length> is the number of samples\n");
+            printf("Defaulting to %d waves and %d length\n", WAVES, LENGTH);
+            MAXWAVES=WAVES;
+            MAXSIZE=LENGTH;
+            break;
+        case 3:
+            MAXSIZE=atoi(argv[2]);
+            MAXWAVES=atoi(argv[1]);
+            break;
+        case 4:
+            MAXSIZE=atoi(argv[2]);
+            MAXWAVES=atoi(argv[1]);
+            invfft = !strncmp(argv[3],"-i",2);
+            break;
+        default:
+            exit(-1);
+    }
 
     srand(1);
 
