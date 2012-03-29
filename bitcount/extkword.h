@@ -34,19 +34,19 @@
 */
 
 #if !defined(__FLAT__) && !defined(__WATCOMC__) && !defined(_MSC_VER)
- #if defined(__GNUC__)
-  #define __FLAT__ 1
- #elif defined (_WIN32) || defined(WIN32) || defined(__NT__)
-  #define __FLAT__ 1
- #elif defined(__INTSIZE)
-  #if (4 == __INTSIZE)
-   #define __FLAT__ 1
-  #endif
- #elif (defined(__ZTC__) && !defined(__SC__)) || defined(__TURBOC__)
-  #if ((INT_MAX != SHRT_MAX) && (SHRT_MAX == 32767))
-   #define __FLAT__ 1
-  #endif
- #endif
+#if defined(__GNUC__)
+#define __FLAT__ 1
+#elif defined (_WIN32) || defined(WIN32) || defined(__NT__)
+#define __FLAT__ 1
+#elif defined(__INTSIZE)
+#if (4 == __INTSIZE)
+#define __FLAT__ 1
+#endif
+#elif (defined(__ZTC__) && !defined(__SC__)) || defined(__TURBOC__)
+#if ((INT_MAX != SHRT_MAX) && (SHRT_MAX == 32767))
+#define __FLAT__ 1
+#endif
+#endif
 #endif
 
 /*
@@ -54,18 +54,18 @@
 */
 
 #if defined(__OS2__)        /* EBB: not sure this works for OS/2 1.x */
- #include <os2def.h>
- #define INTERRUPT
- #define HUGE
+#include <os2def.h>
+#define INTERRUPT
+#define HUGE
 #elif defined(_WIN32) || defined(WIN32) || defined(__NT__)
- #define WIN32_LEAN_AND_MEAN
- #define NOGDI
- #define NOSERVICE
- #undef INC_OLE1
- #undef INC_OLE2
- #include <windows.h>
- #define INTERRUPT
- #define HUGE
+#define WIN32_LEAN_AND_MEAN
+#define NOGDI
+#define NOSERVICE
+#undef INC_OLE1
+#undef INC_OLE2
+#include <windows.h>
+#define INTERRUPT
+#define HUGE
 #else /* ! Win 32 or OS/2 */
 /* #if (defined(__POWERC) || (defined(__TURBOC__) && !defined(__BORLANDC__)) \
    || (defined(__ZTC__) && !defined(__SC__))) && !defined(__FLAT__)
@@ -90,12 +90,12 @@
    #define CDECL _cdecl
    #define INTERRUPT _interrupt
    #else*/
-   #define FAR
-   #define NEAR
-   #define HUGE
-   #define PASCAL
-   #define CDECL
-  #endif
+#define FAR
+#define NEAR
+#define HUGE
+#define PASCAL
+#define CDECL
+#endif
 /* #endif
    #endif*/
 

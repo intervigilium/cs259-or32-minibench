@@ -58,11 +58,11 @@ void  flipbit(char *set, int number);
 */
 
 typedef struct  {
-      FILE *  file;       /* for stream I/O   */
-      char    rbuf;       /* read bit buffer  */
-      char    rcnt;       /* read bit count   */
-      char    wbuf;       /* write bit buffer */
-      char    wcnt;       /* write bit count  */
+    FILE *  file;       /* for stream I/O   */
+    char    rbuf;       /* read bit buffer  */
+    char    rcnt;       /* read bit count   */
+    char    wbuf;       /* write bit buffer */
+    char    wcnt;       /* write bit count  */
 } bfile;
 
 bfile * bfopen(char *name, char *mode);
