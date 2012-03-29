@@ -19,6 +19,10 @@
 #define TIMER_HZ 1000
 #endif
 
+#ifndef ITERATIONS
+#define ITERATIONS 1125000
+#endif
+
 #define FUNCS  7
 
 static int CDECL bit_shifter(long int x);
@@ -51,10 +55,11 @@ int main(int argc, char *argv[]) {
         "Shift and count bits"
     };
     if (argc<2) {
-        fprintf(stderr,"Usage: bitcnts <iterations>\n");
-        exit(-1);
+        printf("Defaulting to %d iterations\n", ITERATIONS);
+        iterations = ITERATIONS;
+    } else {
+        iterations=atoi(argv[1]);
     }
-    iterations=atoi(argv[1]);
 
     puts("Bit counter algorithm benchmark\n");
 
