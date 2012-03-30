@@ -1,7 +1,7 @@
 # Makefile
 
 CC = or32-elf-gcc
-CFLAGS = -static -O3 -mregistermask=0 -mnewlib -mboard=atlys
+CFLAGS = -static -O3 -mregistermask=4294901760 -mnewlib -mboard=atlys
 LIBS= -lm
 
 SRC = fftmisc.c fourierf.c
