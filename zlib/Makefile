@@ -4,7 +4,7 @@ CC = or32-elf-gcc
 CFLAGS = -static -O3 -mregistermask=4294901760 -mnewlib -mboard=atlys
 LIBS =
 
-SRC = zlib_bench.c
+SRC = zlib_bench.c deflate.c zutil.c crc32.c adler32.c gzlib.c gzwrite.c trees.c
 OBJ = ${SRC:.c=.o}
 OUT = zlib_bench
 

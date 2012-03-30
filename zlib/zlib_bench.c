@@ -21,7 +21,7 @@
 
 int main(int argc, char *argv[])
 {
-  int i, ret;
+  int i, j, ret;
   unsigned int ticks;
   z_stream strm;
   unsigned char in[CHUNK];
@@ -42,14 +42,26 @@ int main(int argc, char *argv[])
   or1k_timer_init(TIMER_HZ);
   or1k_timer_enable();
 
-  for (i = 0 i < ITERATIONS; i++) {
-    for (i = 0; i < CHUNK; i++) {
-      in[i] = (unsigned char) rand(256);
+  for (i = 0; i < ITERATIONS; i++) {
+    for (j = 0; i < CHUNK; j++) {
+      in[j] = (unsigned char) (rand() % 256);
     }
 
     /* start deflate */
+    strm.avail_in = CHUNK;
+    strm.next_in = in;
 
+    do {
+      strm.avail_out = CHUNK;
+      strm.next_out = out;
+      ret = deflate(&strm, 0);
+      if (ret == Z_STREAM_ERROR) {
+        printf("Error in deflate!\n");
+        break;
+      }
+    } while (strm.avail_out != 0);
   }
+  deflateEnd(&strm);
 
   ticks = or1k_timer_get_ticks();
   printf("Elapsed: %d ticks at %d Hz\n", ticks, TIMER_HZ);
