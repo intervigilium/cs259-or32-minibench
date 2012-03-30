@@ -14,7 +14,7 @@
 #endif
 
 #ifndef ITERATIONS
-#define ITERATIONS 1000
+#define ITERATIONS 100
 #endif
 
 #define CHUNK 16384
@@ -36,14 +36,16 @@ int main(int argc, char *argv[])
     printf("Error initializing zlib\n");
     exit(-1);
   }
+  printf("Initialized deflate\n");
 
   srand(1337);
 
   or1k_timer_init(TIMER_HZ);
   or1k_timer_enable();
 
+  printf("Performing %d deflate iterations\n", ITERATIONS);
   for (i = 0; i < ITERATIONS; i++) {
-    for (j = 0; i < CHUNK; j++) {
+    for (j = 0; j < CHUNK; j++) {
       in[j] = (unsigned char) (rand() % 256);
     }
 
@@ -51,16 +53,15 @@ int main(int argc, char *argv[])
     strm.avail_in = CHUNK;
     strm.next_in = in;
 
-    do {
-      strm.avail_out = CHUNK;
-      strm.next_out = out;
-      ret = deflate(&strm, 0);
-      if (ret == Z_STREAM_ERROR) {
-        printf("Error in deflate!\n");
-        break;
-      }
-    } while (strm.avail_out != 0);
+    strm.avail_out = CHUNK;
+    strm.next_out = out;
+    ret = deflate(&strm, 0);
+    if (ret == Z_STREAM_ERROR) {
+      printf("Error in deflate!\n");
+      break;
+    }
   }
+  printf("Finished %d deflate iterations\n", ITERATIONS);
   deflateEnd(&strm);
 
   ticks = or1k_timer_get_ticks();
