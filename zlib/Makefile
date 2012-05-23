@@ -1,7 +1,9 @@
 # Makefile
 
 CC = or32-elf-gcc
-CFLAGS = -static -Os -mregistermask=4294901760 -mnewlib -mboard=atlys
+CFLAGS = -static -mnewlib -mboard=atlys
+#CFLAGS += -mregistermask=4294901760
+#CFLAGS += -Wa,-mpufkey=0x003ff800
 LIBS =
 
 SRC = zlib_bench.c deflate.c zutil.c crc32.c adler32.c gzlib.c gzflags.c trees.c

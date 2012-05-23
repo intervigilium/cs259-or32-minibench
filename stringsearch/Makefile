@@ -1,7 +1,9 @@
 # Makefile
 
 CC = or32-elf-gcc
-CFLAGS = -O3 -static -mregistermask=4294901760 -mnewlib -mboard=atlys
+CFLAGS = -static  -mnewlib -mboard=atlys
+#CFLAGS += -mregistermask=4294901760
+#CFLAGS += -Wa,-mpufkey=0x003ff800
 LIBS =
 
 SRC1 = bmhasrch.c bmhisrch.c bmhsrch.c pbmsrch_small.c

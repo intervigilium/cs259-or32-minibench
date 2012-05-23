@@ -1,7 +1,9 @@
 # Makefile
 
 CC = or32-elf-gcc
-CFLAGS = -static -O3 -mregistermask=4294901760 -mnewlib -mboard=atlys -DTIMER_HZ=1000
+CFLAGS = -static -mnewlib -mboard=atlys -DTIMER_HZ=1000
+#CFLAGS += -mregistermask=4294901760
+#CFLAGS += -Wa,-mpufkey=0x003ff800
 LIBS = -lm
 
 SRC1 = basicmath_small.c rad2deg.c cubic.c isqrt.c
