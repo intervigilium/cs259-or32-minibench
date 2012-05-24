@@ -4,7 +4,7 @@ CC = or32-elf-gcc
 CFLAGS = -static -mnewlib -mboard=atlys -DTIMER_HZ=1000
 #CFLAGS += -mregistermask=4294901760
 #CFLAGS += -Wa,-mpufkey=0x003ff800
-#CFLAGS += -DSECURE_OPS
+#CFLAGS += -DUSE_SECURE
 LIBS = -lm
 
 SRC1 = basicmath_small.c rad2deg.c cubic.c isqrt.c secure_func.c
