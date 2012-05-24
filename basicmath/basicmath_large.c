@@ -23,6 +23,7 @@ int main(void) {
     or1k_timer_init(TIMER_HZ);
     or1k_timer_enable();
 
+#if 0
     /* solve soem cubic functions */
     printf("********* CUBIC FUNCTIONS ***********\n");
     /* should get 3 solutions: 2, 6 & 2.5   */
@@ -117,7 +118,7 @@ int main(void) {
             }
         }
     }
-
+#endif
 
     printf("********* INTEGER SQR ROOTS ***********\n");
     /* perform some integer square roots */
@@ -135,7 +136,7 @@ int main(void) {
         printf("sqrt(%lX) = %X\n", l, q.sqrt);
     }
 
-
+#if 0
     printf("********* ANGLE CONVERSION ***********\n");
     /* convert some rads to degrees */
     /* for (X = 0.0; X <= 360.0; X += 1.0) */
@@ -148,6 +149,7 @@ int main(void) {
 
     ticks = or1k_timer_get_ticks();
     printf("********* ANGLE CONVERSION ***********\n");
+#endif
     printf("Elapsed: %d ticks at %d Hz\n", ticks, TIMER_HZ);
 
     return 0;
