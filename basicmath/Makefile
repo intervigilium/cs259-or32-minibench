@@ -11,9 +11,9 @@ SRC1 = basicmath_small.c rad2deg.c cubic.c isqrt.c secure_func.c
 OBJ1 = ${SRC1:.c=.o}
 OUT1 = basicmath_small
 
-SRC2 = basicmath_large.c rad2deg.c cubic.c isqrt.c secure_func.c
-OBJ2 = ${SRC2:.c=.o}
-OUT2 = basicmath_large
+#SRC2 = basicmath_large.c rad2deg.c cubic.c isqrt.c secure_func.c
+#OBJ2 = ${SRC2:.c=.o}
+#OUT2 = basicmath_large
 
 all: ${OUT1} ${OUT2}
 
