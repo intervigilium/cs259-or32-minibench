@@ -32,7 +32,7 @@ int main(void) {
     /* solve some cubic functions */
     printf("********* CUBIC FUNCTIONS ***********\n");
     /* should get 3 solutions: 2, 6 & 2.5   */
-#ifdef USE_SECURE
+#ifdef USE_SECURE_FP
     SolveCubic(a1, b1, c1, d1, &solutions, x, 0);
     SolveCubic(a1, b1, c1, d1, &solutions, y, 1);
     printf("Difference:");
@@ -47,7 +47,7 @@ int main(void) {
     printf("\n");
 #endif
     /* should get 1 solution: 2.5           */
-#ifdef USE_SECURE
+#ifdef USE_SECURE_FP
     SolveCubic(a2, b2, c2, d2, &solutions, x, 0);
     SolveCubic(a2, b2, c2, d2, &solutions, y, 1);
     printf("Difference:");
@@ -61,7 +61,7 @@ int main(void) {
         printf(" %f",x[i]);
     printf("\n");
 #endif
-#ifdef USE_SECURE
+#ifdef USE_SECURE_FP
     SolveCubic(a3, b3, c3, d3, &solutions, x, 0);
     SolveCubic(a3, b3, c3, d3, &solutions, y, 1);
     printf("Difference:");
@@ -75,7 +75,7 @@ int main(void) {
         printf(" %f",x[i]);
     printf("\n");
 #endif
-#ifdef USE_SECURE
+#ifdef USE_SECURE_FP
     SolveCubic(a4, b4, c4, d4, &solutions, x, 0);
     SolveCubic(a4, b4, c4, d4, &solutions, y, 1);
     printf("Difference:");
@@ -128,7 +128,7 @@ int main(void) {
 
 #if 1
     printf("********* ANGLE CONVERSION ***********\n");
-#ifdef USE_SECURE
+#ifdef USE_SECURE_FP
     for (X = 0.0; X <= 360.0; X += 1.0)
         printf("Difference= %.12f\n", deg2rad(X, 0) - deg2rad(X, 1));
 #else
@@ -136,7 +136,7 @@ int main(void) {
         printf("%3.0f degrees = %.12f radians\n", X, deg2rad(X, 0));
 #endif
     puts("");
-#ifdef USE_SECURE
+#ifdef USE_SECURE_FP
     for (X = 0.0; X <= (2 * PI + 1e-6); X += (PI / 180))
         printf("Difference= %.12f\n", rad2deg(X, 0) - deg2rad(X, 1));
 #else
