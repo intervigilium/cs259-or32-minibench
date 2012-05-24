@@ -10,12 +10,25 @@
 #undef rad2deg                /* These are macros defined in PI.H */
 #undef deg2rad
 
+double mul(double a, double b)
+{
+#ifdef SECURE_MUL
+    asm volatile("lf.mulx.s %0,%1,%2;"
+                 : "=r"(a)
+                 : "r"(a), "r"(b)
+                 );
+    return a;
+#else
+    return a * b;
+#endif
+}
+
 double rad2deg(double rad) {
-    return (180.0 * rad / (PI));
+    return mul(180.0, rad) / (PI);
 }
 
 double deg2rad(double deg) {
-    return (PI * deg / 180.0);
+    return mul(PI, deg) / 180.0;
 }
 
 #ifdef TEST
