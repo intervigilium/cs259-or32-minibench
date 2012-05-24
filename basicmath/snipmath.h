@@ -26,7 +26,7 @@ DWORD   ncomb1 (int n, int m);                        /* Combin.C       */
 DWORD   ncomb2 (int n, int m);                        /* Combin.C       */
 void    SolveCubic(double a, double b, double c,      /* Cubic.C        */
                    double d, int *solutions,
-                   double *x);
+                   double *x, int use_secure);
 DWORD   dbl2ulong(double t);                          /* Dbl2Long.C     */
 long    dbl2long(double t);                           /* Dbl2Long.C     */
 double  dround(double x);                             /* Dblround.C     */
@@ -51,8 +51,8 @@ float   IEEEToMSBIN(float f);                         /* Msb2Ieee.C     */
 int     perm_index (char pit[], int size);            /* Perm_Idx.C     */
 int     round_div(int n, int d);                      /* Rnd_Div.C      */
 long    round_ldiv(long n, long d);                   /* Rnd_Div.C      */
-double  rad2deg(double rad);                          /* Rad2Deg.C      */
-double  deg2rad(double deg);                          /* Rad2Deg.C      */
+double  rad2deg(double rad, int use_secure);          /* Rad2Deg.C      */
+double  deg2rad(double deg, int use_secure);          /* Rad2Deg.C      */
 
 #include "pi.h"
 #ifndef PHI
@@ -69,7 +69,7 @@ struct int_sqrt {
              frac;
 };
 
-void usqrt(unsigned long x, struct int_sqrt *q);
+void usqrt(unsigned long x, struct int_sqrt *q, int use_secure);
 
 
 #endif /* SNIPMATH__H */

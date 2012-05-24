@@ -43,7 +43,7 @@
         This means it'll be fast on a wide range of processors.
 */
 
-void usqrt(unsigned long x, struct int_sqrt *q) {
+void usqrt(unsigned long x, struct int_sqrt *q, int use_secure) {
     unsigned long a = 0L;                   /* accumulator      */
     unsigned long r = 0L;                   /* remainder        */
     unsigned long e = 0L;                   /* trial product    */
@@ -56,11 +56,10 @@ void usqrt(unsigned long x, struct int_sqrt *q) {
         a <<= 1;
         e = (a << 1) + 1;
         if (r >= e) {
-#ifdef SECURE_OPS
-            r = secure_sub(r, e);
-#else
-            r = r - e;
-#endif
+            if (use_secure)
+                r = secure_sub(r, e);
+            else
+                r = r - e;
             a++;
         }
     }

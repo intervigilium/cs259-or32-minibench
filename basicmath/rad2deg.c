@@ -11,20 +11,18 @@
 #undef rad2deg                /* These are macros defined in PI.H */
 #undef deg2rad
 
-double rad2deg(double rad) {
-#ifdef SECURE_OPS
-    return secure_fp_mul(180.0, rad) / (PI);
-#else
-    return (180.0 * rad) / (PI);
-#endif
+double rad2deg(double rad, int use_secure) {
+    if (use_secure)
+        return secure_fp_mul(180.0, rad) / (PI);
+    else
+        return (180.0 * rad) / (PI);
 }
 
-double deg2rad(double deg) {
-#ifdef SECURE_OPS
-    return secure_fp_mul(PI, deg) / 180.0;
-#else
-    return (PI * deg) / 180.0;
-#endif
+double deg2rad(double deg, int use_secure) {
+    if (use_secure)
+        return secure_fp_mul(PI, deg) / 180.0;
+    else
+        return (PI * deg) / 180.0;
 }
 
 #ifdef TEST
