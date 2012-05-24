@@ -5,30 +5,26 @@
 */
 
 #include <math.h>
+#include "secure_func.h"
 #include "snipmath.h"
 
 #undef rad2deg                /* These are macros defined in PI.H */
 #undef deg2rad
 
-double mul(double a, double b)
-{
-#ifdef SECURE_MUL
-    asm volatile("lf.mulx.s %0,%1,%2;"
-                 : "=r"(a)
-                 : "r"(a), "r"(b)
-                 );
-    return a;
+double rad2deg(double rad) {
+#ifdef SECURE_OPS
+    return secure_fp_mul(180.0, rad) / (PI);
 #else
-    return a * b;
+    return (180.0 * rad) / (PI);
 #endif
 }
 
-double rad2deg(double rad) {
-    return mul(180.0, rad) / (PI);
-}
-
 double deg2rad(double deg) {
-    return mul(PI, deg) / 180.0;
+#ifdef SECURE_OPS
+    return secure_fp_mul(PI, deg) / 180.0;
+#else
+    return (PI * deg) / 180.0;
+#endif
 }
 
 #ifdef TEST

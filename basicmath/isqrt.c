@@ -1,6 +1,7 @@
 /* +++Date last modified: 05-Jul-1997 */
 
 #include <string.h>
+#include "secure_func.h"
 #include "snipmath.h"
 
 #define BITSPERLONG 32
@@ -42,19 +43,6 @@
         This means it'll be fast on a wide range of processors.
 */
 
-unsigned long sub(unsigned long a, unsigned long b)
-{
-#ifdef SECURE_SUB
-    asm volatile("l.subx %0,%1,%2;"
-                 : "=r"(a)
-                 : "r"(a), "r"(b)
-                 );
-    return a;
-#else
-    return a - b;
-#endif
-}
-
 void usqrt(unsigned long x, struct int_sqrt *q) {
     unsigned long a = 0L;                   /* accumulator      */
     unsigned long r = 0L;                   /* remainder        */
@@ -68,7 +56,11 @@ void usqrt(unsigned long x, struct int_sqrt *q) {
         a <<= 1;
         e = (a << 1) + 1;
         if (r >= e) {
-            r = sub(r, e);
+#ifdef SECURE_OPS
+            r = secure_sub(r, e);
+#else
+            r = r - e;
+#endif
             a++;
         }
     }
