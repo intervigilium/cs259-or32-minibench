@@ -49,6 +49,7 @@ unsigned long sub(unsigned long a, unsigned long b)
                  : "=r"(a)
                  : "r"(a), "r"(b)
                  );
+    return a;
 #else
     return a - b;
 #endif
