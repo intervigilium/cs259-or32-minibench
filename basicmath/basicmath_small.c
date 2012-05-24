@@ -119,10 +119,10 @@ int main(void) {
 #ifdef USE_SECURE
     usqrt(l, &q, 0);
     usqrt(l, &u, 1);
-    printf("\nDifference = %X\n", q.sqrt - u.sqrt);
+    printf("Difference = %X\n", q.sqrt - u.sqrt);
 #else
     usqrt(l, &q, 0);
-    printf("\nsqrt(%lX) = %X\n", l, q.sqrt);
+    printf("Sqrt(%lX) = %X\n", l, q.sqrt);
 #endif
 #endif
 
