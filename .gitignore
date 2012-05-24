@@ -1,2 +1,5 @@
 *.o
 tags
+basicmath_small
+basicmath_large
+loop-test
