@@ -15,7 +15,12 @@ void SolveCubic(double  a,
                 double  d,
                 int    *solutions,
                 double *x) {
-    long double    a1 = b/a, a2 = c/a, a3 = d/a;
+    long double    a1 = b/a, a2 = c/a;
+#ifdef SECURE_OPS
+    long double    a3 = secure_fp_div(d, a);
+#else
+    long double    a3 = d/a;
+#endif
     long double    Q = (a1*a1 - 3.0*a2)/9.0;
     long double R = (2.0*a1*a1*a1 - 9.0*a1*a2 + 27.0*a3)/54.0;
     double    R2_Q3 = R*R - Q*Q*Q;
