@@ -23,7 +23,7 @@ int main(void) {
     or1k_timer_init(TIMER_HZ);
     or1k_timer_enable();
 
-#if 0
+#if 1
     /* solve soem cubic functions */
     printf("********* CUBIC FUNCTIONS ***********\n");
     /* should get 3 solutions: 2, 6 & 2.5   */
@@ -120,6 +120,7 @@ int main(void) {
     }
 #endif
 
+#if 1
     printf("********* INTEGER SQR ROOTS ***********\n");
     /* perform some integer square roots */
     for (i = 0; i < 100000; i+=2) {
@@ -135,8 +136,9 @@ int main(void) {
         //printf("\nsqrt(%lX) = %X, remainder = %X\n", l, q.sqrt, q.frac);
         printf("sqrt(%lX) = %X\n", l, q.sqrt);
     }
+#endif
 
-#if 0
+#if 1
     printf("********* ANGLE CONVERSION ***********\n");
     /* convert some rads to degrees */
     /* for (X = 0.0; X <= 360.0; X += 1.0) */
