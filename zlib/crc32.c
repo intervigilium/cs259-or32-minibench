@@ -21,6 +21,8 @@
   DYNAMIC_CRC_TABLE and MAKECRCH can be #defined to write out crc32.h.
  */
 
+#include "secure_func.h"
+
 #ifdef MAKECRCH
 #  include <stdio.h>
 #  ifndef DYNAMIC_CRC_TABLE
@@ -223,10 +225,11 @@ const unsigned long FAR * ZEXPORT get_crc_table()
 #define DO8 DO1; DO1; DO1; DO1; DO1; DO1; DO1; DO1
 
 /* ========================================================================= */
-unsigned long ZEXPORT crc32(crc, buf, len)
+unsigned long ZEXPORT crc32(crc, buf, len, use_secure)
     unsigned long crc;
     const unsigned char FAR *buf;
     uInt len;
+    int use_secure;
 {
     if (buf == Z_NULL) return 0UL;
 
@@ -235,7 +238,8 @@ unsigned long ZEXPORT crc32(crc, buf, len)
         make_crc_table();
 #endif /* DYNAMIC_CRC_TABLE */
 
-#ifdef BYFOUR
+/* #ifdef BYFOUR */
+#if 0 /* use single byte crc32 for ease of modification */
     if (sizeof(void *) == sizeof(ptrdiff_t)) {
         u4 endian;
 
@@ -252,7 +256,10 @@ unsigned long ZEXPORT crc32(crc, buf, len)
         len -= 8;
     }
     if (len) do {
-        DO1;
+        if (use_secure)
+            crc = secure_xor(crc_table[0][((int)crc ^ (*buf++)) & 0xff], (crc >> 8));
+        else
+            crc = crc_table[0][((int)crc ^ (*buf++)) & 0xff] ^ (crc >> 8);
     } while (--len);
     return crc ^ 0xffffffffUL;
 }

@@ -6,7 +6,7 @@ CFLAGS = -static -mnewlib -mboard=atlys
 #CFLAGS += -Wa,-mpufkey=0x003ff800
 LIBS =
 
-SRC = zlib_bench.c deflate.c zutil.c crc32.c adler32.c gzlib.c gzflags.c trees.c
+SRC = zlib_bench.c deflate.c zutil.c crc32.c adler32.c gzlib.c gzflags.c trees.c secure_func.c
 OBJ = ${SRC:.c=.o}
 OUT = zlib_bench
 
