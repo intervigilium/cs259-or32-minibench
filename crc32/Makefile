@@ -7,7 +7,7 @@ CFLAGS = -static -mnewlib -mboard=atlys -DTIMER_HZ=1000
 #CFLAGS += -DUSE_SECURE
 LIBS =
 
-SRC = crc_32.c secure_func.c
+SRC = crc32.c main.c secure_func.c
 OBJ = ${SRC:.c=.o}
 OUT = crc
 

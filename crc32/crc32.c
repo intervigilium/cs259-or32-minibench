@@ -1,16 +1,7 @@
 /* Crc - 32 BIT ANSI X3.66 CRC checksum files */
-
 #include <stdio.h>
-#include <or1k-support.h>
+#include "crc32.h"
 #include "secure_func.h"
-
-#ifndef TIMER_HZ
-#define TIMER_HZ 1000
-#endif
-
-#ifndef ITERATIONS
-#define ITERATIONS 100
-#endif
 
 /**********************************************************************\
 |* Demonstration program to compute the 32-bit CRC used as the frame  *|
@@ -70,12 +61,6 @@
 /*     hardware you could probably optimize the shift in assembler by  */
 /*     using byte-swap instructions.                                   */
 
-typedef unsigned char BYTE;
-typedef unsigned long DWORD;
-
-/* CRC32 random 16kb chunks */
-#define CHUNK_SIZE 16384
-
 static DWORD crc_32_tab[] = { /* CRC polynomial 0xedb88320 */
     0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f,
     0xe963a535, 0x9e6495a3, 0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988,
@@ -129,49 +114,11 @@ DWORD updcrc32(BYTE octet, DWORD crc, int use_secure) {
         return crc_32_tab[(crc ^ ((BYTE) octet)) & 0xff] ^ (crc >> 8);
 }
 
-DWORD crc32buf(char *buf, size_t len, int use_secure) {
+DWORD crc32(BYTE *buf, size_t len, int use_secure) {
     DWORD oldcrc32 = 0xFFFFFFFF;
 
     for ( ; len; --len, ++buf)
         oldcrc32 = updcrc32(*buf, oldcrc32, use_secure);
 
     return ~oldcrc32;
-}
-
-int
-main(int argc, char *argv[]) {
-    DWORD crc, secure_crc;
-    long charcnt;
-    int i, j;
-    register errors = 0;
-    unsigned int ticks;
-    char in_buf[CHUNK_SIZE];
-
-    srand(1337);
-
-    or1k_timer_init(TIMER_HZ);
-    or1k_timer_enable();
-
-    printf("Performing %d CRC32 iterations\n", ITERATIONS);
-    for (i = 0; i < ITERATIONS; i++) {
-        for (j = 0; j < CHUNK_SIZE; j++) {
-            in_buf[j] = (char) (rand() % 256);
-        }
-
-        /* start CRC32 */
-#ifdef USE_SECURE
-        secure_crc = crc32buf(in_buf, CHUNK_SIZE, 1);
-        crc = crc32buf(in_buf, CHUNK_SIZE, 0);
-        printf("CRC32: 0x%.8x, expected 0x%.8x\n", secure_crc, crc);
-#else
-        crc = crc32buf(in_buf, CHUNK_SIZE, 0);
-        printf("CRC32: 0x%.8x\n", crc);
-#endif
-    }
-    printf("Finished %d CRC32 iterations\n", ITERATIONS);
-
-    ticks = or1k_timer_get_ticks();
-    printf("Elapsed: %d ticks at %d Hz\n", ticks, TIMER_HZ);
-
-    return(errors != 0);
 }
