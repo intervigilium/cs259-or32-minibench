@@ -270,6 +270,8 @@ typedef struct internal_state {
      * updated to the new high water mark.
      */
 
+    int use_secure;
+
 } FAR deflate_state;
 
 /* Output a byte on the stream.

@@ -512,7 +512,7 @@ int ZEXPORT deflateParams(strm, level, strategy)
     if ((strategy != s->strategy || func != configuration_table[level].func) &&
         strm->total_in != 0) {
         /* Flush the last buffer: */
-        err = deflate(strm, Z_BLOCK);
+        err = deflate(strm, Z_BLOCK, 0);
     }
     if (s->level != level) {
         s->level = level;
@@ -660,7 +660,7 @@ local void flush_pending(strm)
 }
 
 /* ========================================================================= */
-int ZEXPORT deflate (strm, flush)
+int ZEXPORT deflate (strm, flush, use_secure)
     z_streamp strm;
     int flush;
 {
@@ -683,6 +683,8 @@ int ZEXPORT deflate (strm, flush)
     s->strm = strm; /* just in case */
     old_flush = s->last_flush;
     s->last_flush = flush;
+
+    s->use_secure = use_secure;
 
     /* Write the header */
     if (s->status == INIT_STATE) {
@@ -1669,7 +1671,10 @@ local block_state deflate_fast(s, flush)
             _tr_tally_dist(s, s->strstart - s->match_start,
                            s->match_length - MIN_MATCH, bflush);
 
-            s->lookahead -= s->match_length;
+            if (s->use_secure)
+                s->lookahead = secure_sub(s->lookahead, s->match_length);
+            else
+                s->lookahead -= s->match_length;
 
             /* Insert new strings in the hash table only if the match length
              * is not too large. This saves time but degrades compression.
@@ -1799,7 +1804,10 @@ local block_state deflate_slow(s, flush)
              * enough lookahead, the last two strings are not inserted in
              * the hash table.
              */
-            s->lookahead -= s->prev_length-1;
+            if (s->use_secure)
+                s->lookahead = secure_sub(s->lookahead, s->prev_length-1);
+            else
+                s->lookahead -= s->prev_length-1;
             s->prev_length -= 2;
             do {
                 if (++s->strstart <= max_insert) {
