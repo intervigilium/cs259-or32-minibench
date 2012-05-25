@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
   sec_strm.zalloc = Z_NULL;
   sec_strm.zfree = Z_NULL;
   sec_strm.opaque = Z_NULL;
-  ret = deflateInit(&strm, Z_DEFAULT_COMPRESSION);
+  ret = deflateInit(&sec_strm, Z_DEFAULT_COMPRESSION);
   if (ret != Z_OK) {
     printf("Error initializing zlib\n");
     exit(-1);
