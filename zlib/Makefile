@@ -4,6 +4,7 @@ CC = or32-elf-gcc
 CFLAGS = -static -mnewlib -mboard=atlys
 #CFLAGS += -mregistermask=4294901760
 #CFLAGS += -Wa,-mpufkey=0x003ff800
+#CFLAGS += -DUSE_SECURE
 LIBS =
 
 SRC = zlib_bench.c deflate.c zutil.c crc32.c adler32.c gzlib.c gzflags.c trees.c secure_func.c

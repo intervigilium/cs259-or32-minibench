@@ -21,11 +21,16 @@
 
 int main(int argc, char *argv[])
 {
-  int i, j, ret;
+  int i, j, k, ret;
+  int diff_count;
   unsigned int ticks;
   z_stream strm;
+  z_stream sec_strm;
   unsigned char in[CHUNK];
   unsigned char out[CHUNK];
+#ifdef USE_SECURE
+  unsigned char sec_out[CHUNK];
+#endif
 
   /* allocate deflate state */
   strm.zalloc = Z_NULL;
@@ -36,6 +41,17 @@ int main(int argc, char *argv[])
     printf("Error initializing zlib\n");
     exit(-1);
   }
+#ifdef USE_SECURE
+  sec_strm.zalloc = Z_NULL;
+  sec_strm.zfree = Z_NULL;
+  sec_strm.opaque = Z_NULL;
+  ret = deflateInit(&strm, Z_DEFAULT_COMPRESSION);
+  if (ret != Z_OK) {
+    printf("Error initializing zlib\n");
+    exit(-1);
+  }
+#endif
+
   printf("Initialized deflate\n");
 
   srand(1337);
@@ -55,7 +71,24 @@ int main(int argc, char *argv[])
 
     strm.avail_out = CHUNK;
     strm.next_out = out;
-    ret = deflate(&strm, 0);
+#ifdef USE_SECURE
+    sec_strm.avail_in = CHUNK;
+    sec_strm.next_in = in;
+
+    sec_strm.avail_out = CHUNK;
+    sec_strm.next_out = sec_out;
+
+    ret = deflate(&strm, 0, 0);
+    ret = deflate(&sec_strm, 0, 1);
+
+    diff_count = 0;
+    for (k = 0; k < CHUNK; k++)
+        if (sec_out[k] != out[k])
+            diff_count++;
+    printf("Difference: %d bytes\n", diff_count);
+#else
+    ret = deflate(&strm, 0, 0);
+#endif
     if (ret == Z_STREAM_ERROR) {
       printf("Error in deflate!\n");
       break;
