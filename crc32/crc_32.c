@@ -1,17 +1,15 @@
-/* +++Date last modified: 05-Jul-1997 */
-
 /* Crc - 32 BIT ANSI X3.66 CRC checksum files */
 
 #include <stdio.h>
 #include <or1k-support.h>
-#include "crc.h"
+#include "secure_func.h"
 
 #ifndef TIMER_HZ
 #define TIMER_HZ 1000
 #endif
 
-#ifdef __TURBOC__
-#pragma warn -cln
+#ifndef ITERATIONS
+#define ITERATIONS 100
 #endif
 
 /**********************************************************************\
@@ -25,10 +23,6 @@
 |* PUB 78 says that the 32-bit FCS reduces otherwise undetected       *|
 |* errors by a factor of 10^-5 over 16-bit FCS.                       *|
 \**********************************************************************/
-
-/* Need an unsigned type capable of holding 32 bits; */
-
-typedef DWORD UNS_32_BITS;
 
 /* Copyright (C) 1986 Gary S. Brown.  You may use this program, or
    code or tables extracted from it, as desired without restriction.*/
@@ -76,7 +70,13 @@ typedef DWORD UNS_32_BITS;
 /*     hardware you could probably optimize the shift in assembler by  */
 /*     using byte-swap instructions.                                   */
 
-static UNS_32_BITS crc_32_tab[] = { /* CRC polynomial 0xedb88320 */
+typedef unsigned char BYTE;
+typedef unsigned long DWORD;
+
+/* CRC32 random 16kb chunks */
+#define CHUNK_SIZE 16384
+
+static DWORD crc_32_tab[] = { /* CRC polynomial 0xedb88320 */
     0x00000000, 0x77073096, 0xee0e612c, 0x990951ba, 0x076dc419, 0x706af48f,
     0xe963a535, 0x9e6495a3, 0x0edb8832, 0x79dcb8a4, 0xe0d5e91e, 0x97d2d988,
     0x09b64c2b, 0x7eb17cbd, 0xe7b82d07, 0x90bf1d91, 0x1db71064, 0x6ab020f2,
@@ -122,69 +122,53 @@ static UNS_32_BITS crc_32_tab[] = { /* CRC polynomial 0xedb88320 */
     0xb40bbe37, 0xc30c8ea1, 0x5a05df1b, 0x2d02ef8d
 };
 
-DWORD updateCRC32(unsigned char ch, DWORD crc) {
-    return UPDC32(ch, crc);
+DWORD updcrc32(BYTE octet, DWORD crc, int use_secure) {
+    if (use_secure)
+        return secure_xor(crc_32_tab[(crc ^ ((BYTE) octet)) & 0xff], (crc >> 8));
+    else
+        return crc_32_tab[(crc ^ ((BYTE) octet)) & 0xff] ^ (crc >> 8);
 }
 
-Boolean_T crc32file(char *name, DWORD *crc, long *charcnt) {
-    register FILE *fin;
-    register DWORD oldcrc32;
-    register int c;
+DWORD crc32buf(char *buf, size_t len, int use_secure) {
+    DWORD oldcrc32 = 0xFFFFFFFF;
 
-    oldcrc32 = 0xFFFFFFFF;
-    *charcnt = 0;
-#ifdef MSDOS
-    if ((fin=fopen(name, "rb"))==NULL)
-#else
-    if ((fin=fopen(name, "r"))==NULL)
-#endif
-    {
-        perror(name);
-        return Error_;
-    }
-    while ((c=getc(fin))!=EOF) {
-        ++*charcnt;
-        oldcrc32 = UPDC32(c, oldcrc32);
-    }
-
-    if (ferror(fin)) {
-        perror(name);
-        *charcnt = -1;
-    }
-    fclose(fin);
-
-    *crc = oldcrc32 = ~oldcrc32;
-
-    return Success_;
-}
-
-DWORD crc32buf(char *buf, size_t len) {
-    register DWORD oldcrc32;
-
-    oldcrc32 = 0xFFFFFFFF;
-
-    for ( ; len; --len, ++buf) {
-        oldcrc32 = UPDC32(*buf, oldcrc32);
-    }
+    for ( ; len; --len, ++buf)
+        oldcrc32 = updcrc32(*buf, oldcrc32, use_secure);
 
     return ~oldcrc32;
-
 }
 
 int
 main(int argc, char *argv[]) {
-    DWORD crc;
+    DWORD crc, secure_crc;
     long charcnt;
+    int i, j;
     register errors = 0;
     unsigned int ticks;
+    char in_buf[CHUNK_SIZE];
+
+    srand(1337);
 
     or1k_timer_init(TIMER_HZ);
     or1k_timer_enable();
 
-    while(--argc > 0) {
-        errors |= crc32file(*++argv, &crc, &charcnt);
-        printf("%08lX %7ld %s\n", crc, charcnt, *argv);
+    printf("Performing %d CRC32 iterations\n", ITERATIONS);
+    for (i = 0; i < ITERATIONS; i++) {
+        for (j = 0; j < CHUNK_SIZE; j++) {
+            in_buf[j] = (char) (rand() % 256);
+        }
+
+        /* start CRC32 */
+#ifdef USE_SECURE
+        secure_crc = crc32buf(in_buf, CHUNK_SIZE, 1);
+        crc = crc32buf(in_buf, CHUNK_SIZE, 0);
+        printf("CRC32: 0x%.8x, expected 0x%.8x\n", secure_crc, crc);
+#else
+        crc = crc32buf(in_buf, CHUNK_SIZE, 0);
+        printf("CRC32: 0x%.8x\n", crc);
+#endif
     }
+    printf("Finished %d CRC32 iterations\n", ITERATIONS);
 
     ticks = or1k_timer_get_ticks();
     printf("Elapsed: %d ticks at %d Hz\n", ticks, TIMER_HZ);
