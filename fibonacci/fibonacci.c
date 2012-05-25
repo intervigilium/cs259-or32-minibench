@@ -6,30 +6,40 @@
 #define FIB_NUM 25
 #endif
 
-int simple_fibonacci(int fib_num, int use_secure)
+void simple_fibonacci(int *res, int fib_num, int use_secure)
 {
   int i;
   int prev = 1;
   int sum = 1;
+  res[0] = 1;
+  res[1] = 1;
 
   for (i = 2; i < fib_num; i++) {
     if (use_secure)
-      sum = secure_add(sum, prev);
+      res[i] = secure_add(res[i-1], res[i-2]);
     else
-      sum += prev;
-    prev = sum - prev;
-    printf("current sum: %d, prev sum: %d\n", sum, prev);
+      res[i] = res[i-1] + res[i-2];
+    /* printf("current sum: %d, prev sum: %d\n", res[i], res[i-1]); */
   }
-
-  return sum;
 }
 
 int main(int argc, char *argv[])
 {
+  int i;
+  int res[FIB_NUM];
+  int sec_res[FIB_NUM];
+
 #ifdef USE_SECURE
-  printf("%d-th Fibonacci number is: %d\n", FIB_NUM, simple_fibonacci(FIB_NUM, 1));
+  simple_fibonacci(res, FIB_NUM, 0);
+  simple_fibonacci(sec_res, FIB_NUM, 1);
+  for (i = 0; i < FIB_NUM; i++) {
+    printf("Difference %d: %d\n", i, sec_res[i] - res[i]);
+  }
 #else
-  printf("%d-th Fibonacci number is: %d\n", FIB_NUM, simple_fibonacci(FIB_NUM, 0));
+  simple_fibonacci(res, FIB_NUM, 0);
+  for (i = 0; i < FIB_NUM; i++) {
+    printf("Fibonacci number %d is: %d\n", i+1, res[i]);
+  }
 #endif
 
   return 0;
