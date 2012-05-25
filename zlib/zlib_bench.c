@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
   unsigned char in[CHUNK];
   unsigned char out[CHUNK];
 #ifdef USE_SECURE
+  unsigned char sec_in[CHUNK];
   unsigned char sec_out[CHUNK];
 #endif
 
@@ -63,6 +64,9 @@ int main(int argc, char *argv[])
   for (i = 0; i < ITERATIONS; i++) {
     for (j = 0; j < CHUNK; j++) {
       in[j] = (unsigned char) (rand() % 256);
+#ifdef USE_SECURE
+      sec_in[j] = in[j];
+#endif
     }
 
     /* start deflate */
@@ -73,14 +77,21 @@ int main(int argc, char *argv[])
     strm.next_out = out;
 #ifdef USE_SECURE
     sec_strm.avail_in = CHUNK;
-    sec_strm.next_in = in;
+    sec_strm.next_in = sec_in;
 
     sec_strm.avail_out = CHUNK;
     sec_strm.next_out = sec_out;
 
     ret = deflate(&strm, 0, 0);
+    if (ret == Z_STREAM_ERROR) {
+      printf("Error in deflate!\n");
+      break;
+    }
     ret = deflate(&sec_strm, 0, 1);
-
+    if (ret == Z_STREAM_ERROR) {
+      printf("Error in secure deflate!\n");
+      break;
+    }
     diff_count = 0;
     for (k = 0; k < CHUNK; k++)
         if (sec_out[k] != out[k])
@@ -88,11 +99,11 @@ int main(int argc, char *argv[])
     printf("Difference: %d bytes\n", diff_count);
 #else
     ret = deflate(&strm, 0, 0);
-#endif
     if (ret == Z_STREAM_ERROR) {
       printf("Error in deflate!\n");
       break;
     }
+#endif
   }
   printf("Finished %d deflate iterations\n", ITERATIONS);
   deflateEnd(&strm);
