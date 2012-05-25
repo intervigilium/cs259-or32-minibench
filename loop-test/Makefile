@@ -5,10 +5,10 @@ CFLAGS = -static -mnewlib -mboard=atlys -DTIMER_HZ=1000
 CFLAGS += -DFIB_NUM=25
 #CFLAGS += -mregistermask=4294901760
 #CFLAGS += -Wa,-mpufkey=0x003ff800
-#CFLAGS += -DSECURE_ADD
+#CFLAGS += -DUSE_SECURE
 LIBS =
 
-SRC1 = loop-test.c
+SRC1 = loop-test.c secure_func.c
 OBJ1 = ${SRC1:.c=.o}
 OUT1 = loop-test
 
