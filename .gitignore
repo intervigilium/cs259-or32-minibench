@@ -1,5 +1,6 @@
 *.o
 *.s
+*.out
 tags
 basicmath_small
 basicmath_large
