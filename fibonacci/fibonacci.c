@@ -3,7 +3,7 @@
 #include "secure_func.h"
 
 #ifndef FIB_NUM
-#define FIB_NUM 25
+#define FIB_NUM 35
 #endif
 
 void simple_fibonacci(int *res, int fib_num, int use_secure)
@@ -25,16 +25,27 @@ void simple_fibonacci(int *res, int fib_num, int use_secure)
 
 int main(int argc, char *argv[])
 {
-  int i;
+  int i, j;
   int res[FIB_NUM];
   int sec_res[FIB_NUM];
+  int diff_sum = 0;
+  int diff_bits = 0;
 
 #ifdef USE_SECURE
   simple_fibonacci(res, FIB_NUM, 0);
   simple_fibonacci(sec_res, FIB_NUM, 1);
   for (i = 0; i < FIB_NUM; i++) {
-    printf("Difference %d: %d\n", i, sec_res[i] - res[i]);
+    printf("%d: Got: %d, expected: %d\n", i, sec_res[i], res[i]);
+
+    diff_bits = 0;
+    for (j = 0; j < sizeof(int) * 8; j++) {
+      if (((sec_res[i] >> j) & 0x1) != ((res[i] >> j) & 0x1))
+        diff_bits++;
+    }
+    diff_sum += diff_bits;
+    printf("Differing bits: %d\n", diff_bits);
   }
+  printf("Average differing bits: %d\n", diff_sum / FIB_NUM);
 #else
   simple_fibonacci(res, FIB_NUM, 0);
   for (i = 0; i < FIB_NUM; i++) {
