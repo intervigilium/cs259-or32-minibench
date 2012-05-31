@@ -1,12 +1,13 @@
 CC=or32-elf-gcc
 CFLAGS="-static -mnewlib -mboard=atlys -DTIMER_HZ=1000 -DUSE_SECURE"
+SRC_FILES="fibonacci.c secure_func.c"
 SIM=or32-sim
 SIM_CFG="/home/echen/scratch/cs259-w12/minisuite/sim-atlys.cfg"
 
 run_test() {
   local KEY=$1
-  $CC ${CFLAGS} "-Wa,-mpufkey=${KEY}" fibonacci.c secure_func.c -o fibonacci
-  $SIM -f ${SIM_CFG} fibonacci > ${KEY}.out
+  $CC ${CFLAGS} "-Wa,-mpufkey=${KEY}" ${SRC_FILES} -o prog.out
+  $SIM -f ${SIM_CFG} prog.out > ${KEY}.out
 }
 
 rm *.out
