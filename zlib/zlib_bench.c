@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
 #ifdef USE_SECURE
   unsigned char sec_in[CHUNK];
   unsigned char sec_out[CHUNK];
+  int diff_sum = 0;
 #endif
 
   /* allocate deflate state */
@@ -96,6 +97,7 @@ int main(int argc, char *argv[])
     for (k = 0; k < CHUNK; k++)
         if (sec_out[k] != out[k])
             diff_count++;
+    diff_sum += diff_count;
     printf("Difference: %d bytes\n", diff_count);
 #else
     ret = deflate(&strm, 0, 0);
@@ -107,6 +109,10 @@ int main(int argc, char *argv[])
   }
   printf("Finished %d deflate iterations\n", ITERATIONS);
   deflateEnd(&strm);
+#ifdef USE_SECURE
+  deflateEnd(&sec_strm);
+  printf("Average bytes difference: %d\n", diff_sum / ITERATIONS);
+#endif
 
   ticks = or1k_timer_get_ticks();
   printf("Elapsed: %d ticks at %d Hz\n", ticks, TIMER_HZ);
