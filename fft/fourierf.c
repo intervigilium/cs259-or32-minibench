@@ -40,7 +40,8 @@ void fft_float (
     float    *RealIn,
     float    *ImagIn,
     float    *RealOut,
-    float    *ImagOut ) {
+    float    *ImagOut,
+    float    error) {
     unsigned NumBits;    /* Number of bits needed to store indices */
     unsigned i, j, k, n;
     unsigned BlockSize, BlockEnd;
@@ -116,6 +117,7 @@ void fft_float (
 
                 RealOut[j] += tr;
                 ImagOut[j] += ti;
+                RealOut[j] += error;
             }
         }
 

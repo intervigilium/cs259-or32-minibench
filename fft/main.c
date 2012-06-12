@@ -22,7 +22,9 @@ int main(int argc, char *argv[]) {
     float *RealIn;
     float *ImagIn;
     float *RealOut;
+    float *RealOutErr;
     float *ImagOut;
+    float *ImagOutErr;
     float *coeff;
     float *amp;
     int invfft=0;
@@ -61,6 +63,9 @@ int main(int argc, char *argv[]) {
     ImagOut=(float*)malloc(sizeof(float)*MAXSIZE);
     coeff=(float*)malloc(sizeof(float)*MAXWAVES);
     amp=(float*)malloc(sizeof(float)*MAXWAVES);
+
+    RealOutErr=(float*)malloc(sizeof(float)*MAXSIZE);
+    ImagOutErr=(float*)malloc(sizeof(float)*MAXSIZE);
 
     /* Makes MAXWAVES waves of random amplitude and period */
     for(i=0; i<MAXWAVES; i++) {

@@ -43,8 +43,8 @@ extern "C" {
         float    *RealIn,              /* array of input's real samples */
         float    *ImaginaryIn,         /* array of input's imag samples */
         float    *RealOut,             /* array of output's reals */
-        float    *ImaginaryOut );      /* array of output's imaginaries */
-
+        float    *ImaginaryOut,        /* array of output's imaginaries */
+        float    err);
 
     int IsPowerOfTwo ( unsigned x );
     unsigned NumberOfBitsNeeded ( unsigned PowerOfTwo );
