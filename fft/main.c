@@ -90,17 +90,42 @@ int main(int argc, char *argv[]) {
     or1k_timer_enable();
 
     /* regular*/
-    fft_float (MAXSIZE,invfft,RealIn,ImagIn,RealOut,ImagOut);
+    fft_float (MAXSIZE,invfft,RealIn,ImagIn,RealOut,ImagOut,0);
 
+    /* introduce some error */
+    fft_float (MAXSIZE,invfft,RealIn,ImagIn,RealOutErr,ImagOutErr,0.42);
+
+#if 0
     printf("RealOut:\n");
     for (i=0; i<MAXSIZE; i++)
-        printf("%f \t", RealOut[i]);
+        printf("%f\n", RealOut[i]);
     printf("\n");
 
     printf("ImagOut:\n");
     for (i=0; i<MAXSIZE; i++)
-        printf("%f \t", ImagOut[i]);
+        printf("%f\n", ImagOut[i]);
     printf("\n");
+#endif
+#if 0
+    printf("Real\n");
+    for (i=0; i<MAXSIZE; i++) {
+        printf("%d, %f\n", i, 100*(RealOut[i]-RealOutErr[i])/RealOut[i]);
+    }
+
+    printf("Imaginary\n");
+    for (i=0; i<MAXSIZE; i++) {
+        printf("%d, %f\n", i, 100*(ImagOut[i]-ImagOutErr[i])/ImagOut[i]);
+    }
+#endif
+    printf("Real\n");
+    for (i=0; i<MAXSIZE; i++) {
+        printf("%d,%f,%f\n", i, RealOut[i], RealOutErr[i]);
+    }
+
+    printf("Imaginary\n");
+    for (i=0; i<MAXSIZE; i++) {
+        printf("%d,%f,%f\n", i, ImagOut[i], ImagOutErr[i]);
+    }
 
     ticks = or1k_timer_get_ticks();
     printf("Elapsed: %d ticks at %d Hz\n", ticks, TIMER_HZ);
